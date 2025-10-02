@@ -27,6 +27,15 @@ public class QuestionAnswerService {
     private static final int MINIMUM_SCORE_THRESHOLD = 2;
 
 
+    // Estas palabras comunes se ignoran en la búsqueda
+    private static final Set<String> STOP_WORDS = Set.of(
+            "a", "al", "como", "con", "cual", "de", "del", "donde", "el", "en", "es", "la", "las", "los",
+            "me", "mi", "mis", "o", "para", "pero", "por", "que", "se", "si", "sobre", "su",
+            "un", "una", "y", "yo", "quiero", "saber", "puedo", "necesito"
+    );
+
+
+
     public QuestionAnswerService(QuestionAnswerRepository repository) {
         this.repository = repository;
     }
@@ -38,7 +47,7 @@ public class QuestionAnswerService {
      * @return Un Optional que contiene la respuesta si se encuentra una coincidencia,
      * o un Optional vacío si no se encuentra ninguna respuesta adecuada.
      */
-    // Usamos un Optional para evitar null pointers, la cnosola se encargará de gestionar lo que pasa si el Optional está empty()
+    // Usamos un Optional para evitar null pointers, la consola se encargará de gestionar lo que pasa si el Optional está empty()
     public Optional<String> findAnswerFor(String userQuestion) {
         ServiceLogEvent.SEARCH_STARTED.log(log, userQuestion);
 
@@ -54,7 +63,7 @@ public class QuestionAnswerService {
         record Match(QuestionAnswer candidate, int score) {}
 
         // Procesamos los candidatos para encontrar el mejor.
-        // De nuevo, usamos Set para evitar duplicados "Vull vacances! vacances, sí redimoni!" (Solo guarda "vacances" una vez)
+        // De nuevo, usamos Set para evitar duplicados: "Vull vacances! vacances, sí redimoni!" (Solo guarda "vacances" una vez)
         Optional<Match> bestMatchOptional = candidates.stream()
                 .map(candidate -> {
                     Set<String> candidateTokens = getTokens(candidate.getQuestion());
@@ -65,7 +74,7 @@ public class QuestionAnswerService {
                 .filter(match -> match.score() >= MINIMUM_SCORE_THRESHOLD)
                 .max(Comparator.comparingInt(Match::score));
 
-        // Damos con una respuesta adecuada a la pregunta, o no?
+        // Damos (O no) con una respuesta adecuada a la pregunta
         if (bestMatchOptional.isPresent()) {
             Match bestMatch = bestMatchOptional.get();
             ServiceLogEvent.SEARCH_SUCCESSFUL.log(log, bestMatch.candidate().getId(), bestMatch.score());
@@ -95,6 +104,7 @@ public class QuestionAnswerService {
 
         return Arrays.stream(normalized.split("\\s+"))
                 .filter(token -> !token.isEmpty())
+                .filter(token -> !STOP_WORDS.contains(token))
                 .collect(Collectors.toSet());
     }
 

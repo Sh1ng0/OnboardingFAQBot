@@ -51,20 +51,22 @@ Al arrancar la aplicación, puedes interactuar directamente con el bot. Introduc
 
 **Ejemplo de búsqueda exitosa:**
 
-
-Com demano les vacances?
-Bot: Has d’enviar un correu a rrhh@empresa.com amb les dates proposades.
-
+```
+¿Cómo solicito las vacaciones?
+Bot: Debes enviar un correo a rrhh@empresa.com con las fechas propuestas.
+```
 
 **Ejemplo de búsqueda parcial:**
-parlem de l'horari
-Bot: L'horari es de 9:00 a 18:00, de dilluns a divendres.
-
+```
+Háblame del horario
+Bot: El horario es de 9:00 a 18:00, de lunes a viernes.
+```
 
 **Ejemplo de búsqueda sin resultados:**
-On es la maquina de cafe?
-Bot: Ho sento, no he trobat una resposta per a la teva pregunta.
-
+```
+¿Dónde está la máquina de café?
+Bot: Lo siento, no he encontrado una respuesta para tu pregunta.
+```
 
 ---
 
@@ -75,12 +77,16 @@ El proyecto incluye una suite de tests unitarios y de integración para garantiz
 Para ejecutar todos los tests, utiliza el siguiente comando de Maven:
 ```bash
 mvn test
+```
 
-Documentación REST (Swagger UI)
+---
+
+## Documentación REST (Swagger UI)
+
 La API REST está completamente documentada usando OpenAPI 3. Una vez que la aplicación está en ejecución, puedes acceder a la interfaz interactiva de Swagger UI en la siguiente URL:
 
-http://localhost:8090/swagger-ui.html
+[http://localhost:8090/swagger-ui.html](http://localhost:8090/swagger-ui.html)
 
 Adicionalmente, se ha incluido Spring Boot Actuator. Puedes consultar el estado de salud de la aplicación (incluyendo la conexión a la base de datos) aquí:
 
-http://localhost:8090/actuator/health
+[http://localhost:8090/actuator/health](http://localhost:8090/actuator/health)
