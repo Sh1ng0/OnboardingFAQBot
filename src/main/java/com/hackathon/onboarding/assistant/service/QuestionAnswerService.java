@@ -1,9 +1,15 @@
 package com.hackathon.onboarding.assistant.service;
 
+import com.hackathon.onboarding.assistant.logger.ServiceLogEvent;
+import com.hackathon.onboarding.assistant.model.QuestionAnswer;
 import com.hackathon.onboarding.assistant.repository.QuestionAnswerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.text.Normalizer;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Servicio principal de la aplicación.
@@ -14,11 +20,13 @@ public class QuestionAnswerService {
 
     private final QuestionAnswerRepository repository;
 
-    /**
-     * Inyecta el repositorio de preguntas y respuestas a través del constructor.
-     * Esta es la práctica recomendada para la inyección de dependencias en Spring.
-     * @param repository El repositorio para acceder a los datos.
-     */
+    private static final Logger log = LoggerFactory.getLogger(QuestionAnswerService.class);
+
+    // Definimos un umbral mínimo de puntuación para considerar una coincidencia válida.
+    // Evita falsos positivos con palabras muy comunes. Puntuación de 2 (dos palabras en común) es un buen comienzo.
+    private static final int MINIMUM_SCORE_THRESHOLD = 2;
+
+
     public QuestionAnswerService(QuestionAnswerRepository repository) {
         this.repository = repository;
     }
@@ -31,17 +39,61 @@ public class QuestionAnswerService {
      * o un Optional vacío si no se encuentra ninguna respuesta adecuada.
      */
     public Optional<String> findAnswerFor(String userQuestion) {
-        // --- TODO: Implementar la lógica de búsqueda inteligente aquí ---
-        // 1. Obtener todas las QuestionAnswer de la base de datos con repository.findAll().
-        // 2. Normalizar la pregunta del usuario.
-        // 3. Iterar sobre las preguntas de la BBDD, calcular una puntuación de similitud.
-        // 4. Encontrar la que tenga la puntuación más alta.
-        // 5. Si la puntuación supera un umbral, devolver su 'answer'.
-        // 6. Si no, devolver Optional.empty().
+        ServiceLogEvent.SEARCH_STARTED.log(log, userQuestion);
 
-        System.out.println("Buscando respuesta para: " + userQuestion);
-        System.out.println("Datos del repositorio: " + repository.findAll());
+        // Obtener de la db
+        List<QuestionAnswer> candidates = repository.findAll();
+        ServiceLogEvent.CANDIDATES_FOUND.log(log, candidates.size());
 
-        return Optional.empty(); // De momento, devolvemos vacío.
+        // Normalización del string y tokenización del mismo
+        Set<String> userTokens = getTokens(userQuestion);
+
+        // Este record aún candidato de respuesta y puntiación
+
+        record Match(QuestionAnswer candidate, int score) {}
+
+        // Procesamos los candidatos para encontrar el mejor.
+        // De nuevo, usamos Set para evitar duplicados "Vull vacances, vacances sí redimoni!" (Solo guarda "vacances" una vez)
+        Optional<Match> bestMatchOptional = candidates.stream()
+                .map(candidate -> {
+                    Set<String> candidateTokens = getTokens(candidate.question());
+                    Set<String> intersection = new java.util.HashSet<>(candidateTokens);
+                    intersection.retainAll(userTokens);
+                    return new Match(candidate, intersection.size());
+                })
+                .filter(match -> match.score() >= MINIMUM_SCORE_THRESHOLD)
+                .max(Comparator.comparingInt(Match::score));
+
+        // Damos con una respuesta adecuada a la pregunta, o no?
+        if (bestMatchOptional.isPresent()) {
+            Match bestMatch = bestMatchOptional.get();
+            ServiceLogEvent.SEARCH_SUCCESSFUL.log(log, bestMatch.candidate().id(), bestMatch.score());
+            return Optional.of(bestMatch.candidate().answer());
+        } else {
+            ServiceLogEvent.SEARCH_FAILED.log(log, userQuestion);
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Normaliza y tokeniza un texto para prepararlo para la comparación.
+     * @param text El texto a procesar.
+     * @return Un conjunto de palabras (tokens) normalizadas.
+     */
+    private Set<String> getTokens(String text) {
+        if (text == null || text.isBlank()) {
+            return Set.of();
+        }
+
+        String normalized = text.toLowerCase();
+
+        normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+
+        normalized = normalized.replaceAll("\\p{Punct}", "");
+
+        return Arrays.stream(normalized.split("\\s+"))
+                .filter(token -> !token.isEmpty())
+                .collect(Collectors.toSet());
     }
 }
