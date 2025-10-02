@@ -38,6 +38,7 @@ public class QuestionAnswerService {
      * @return Un Optional que contiene la respuesta si se encuentra una coincidencia,
      * o un Optional vacío si no se encuentra ninguna respuesta adecuada.
      */
+    // Usamos un Optional para evitar null pointers, la cnosola se encargará de gestionar lo que pasa si el Optional está empty()
     public Optional<String> findAnswerFor(String userQuestion) {
         ServiceLogEvent.SEARCH_STARTED.log(log, userQuestion);
 
@@ -95,5 +96,16 @@ public class QuestionAnswerService {
         return Arrays.stream(normalized.split("\\s+"))
                 .filter(token -> !token.isEmpty())
                 .collect(Collectors.toSet());
+    }
+
+    // CONTROLLER STUFF
+
+    public List<QuestionAnswer> findAll() {
+        return repository.findAll();
+    }
+
+    public QuestionAnswer add(QuestionAnswer newQuestionAnswer) {
+        // Maybe vaildeish
+        return repository.save(newQuestionAnswer);
     }
 }
