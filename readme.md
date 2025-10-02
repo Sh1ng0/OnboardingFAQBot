@@ -21,7 +21,7 @@ Para compilar y ejecutar el proyecto, necesitarás:
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://www.youtube.com/watch?v=44ziZ12rJwU](https://www.youtube.com/watch?v=44ziZ12rJwU)
+    git clone https://github.com/Sh1ng0/OnboardingFAQBot
     cd onboarding-assistant
     ```
 
