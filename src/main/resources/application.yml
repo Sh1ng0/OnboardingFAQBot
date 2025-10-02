@@ -1,0 +1,48 @@
+# ===================================================================
+# CONFIGURACIÓN DEL SERVIDOR
+# ===================================================================
+server:
+  port: 8090
+
+# ===================================================================
+# CONFIGURACIÓN GENERAL DE SPRING
+# ===================================================================
+spring:
+  application:
+    name: onboarding-assistant
+
+  # ===================================================================
+  # CONFIGURACIÓN DE LA BASE DE DATOS (H2)
+  # ===================================================================
+  datasource:
+    url: jdbc:h2:mem:onboardingdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: ""
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  # ===================================================================
+  # CONFIGURACIÓN DE JPA / HIBERNATE
+  # ===================================================================
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+    show-sql: true
+
+# ===================================================================
+# CONFIGURACIÓN DE LA DOCUMENTACIÓN (OpenAPI/Swagger)
+# ===================================================================
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /api-docs
+  info:
+    title: Onboarding Assistant API
+    description: API para la gestión de la base de conocimiento del asistente de Onboarding.
+    version: 1.0.0

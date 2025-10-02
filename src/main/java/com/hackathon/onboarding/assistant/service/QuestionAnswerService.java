@@ -49,12 +49,12 @@ public class QuestionAnswerService {
         // Normalización del string y tokenización del mismo
         Set<String> userTokens = getTokens(userQuestion);
 
-        // Este record aún candidato de respuesta y puntiación
+        // Este record aúna un candidato de respuesta con su puntuación
 
         record Match(QuestionAnswer candidate, int score) {}
 
         // Procesamos los candidatos para encontrar el mejor.
-        // De nuevo, usamos Set para evitar duplicados "Vull vacances, vacances sí redimoni!" (Solo guarda "vacances" una vez)
+        // De nuevo, usamos Set para evitar duplicados "Vull vacances! vacances, sí redimoni!" (Solo guarda "vacances" una vez)
         Optional<Match> bestMatchOptional = candidates.stream()
                 .map(candidate -> {
                     Set<String> candidateTokens = getTokens(candidate.question());
