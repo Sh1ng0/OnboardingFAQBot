@@ -4,7 +4,7 @@ package com.hackathon.onboarding.assistant.logger;
 
 public enum ServiceLogEvent implements Loggable {
 
-    // --- Eventos de Log para nuestro Servicio ---
+
     SEARCH_STARTED(LogLevel.INFO, "Iniciando búsqueda de respuesta para la pregunta: ''{0}''."),
     CANDIDATES_FOUND(LogLevel.DEBUG, "Encontrados {0} candidatos en la base de datos."),
     SEARCH_SUCCESSFUL(LogLevel.INFO, "Búsqueda finalizada. Mejor candidato encontrado con ID {0} y puntuación {1}."),
@@ -12,7 +12,6 @@ public enum ServiceLogEvent implements Loggable {
 
     private final LogLevel level;
     private final String messageTemplate;
-
 
 
     ServiceLogEvent(LogLevel level, String messageTemplate) {

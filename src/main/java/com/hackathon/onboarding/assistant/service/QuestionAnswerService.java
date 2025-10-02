@@ -23,7 +23,7 @@ public class QuestionAnswerService {
     private static final Logger log = LoggerFactory.getLogger(QuestionAnswerService.class);
 
     // Definimos un umbral mínimo de puntuación para considerar una coincidencia válida.
-    // Evita falsos positivos con palabras muy comunes. Puntuación de 2 (dos palabras en común) es un buen comienzo.
+    // Evita falsos positivos con palabras muy comunes. Puntuación de 2 (dos palabras en común)
     private static final int MINIMUM_SCORE_THRESHOLD = 2;
 
 
@@ -33,8 +33,6 @@ public class QuestionAnswerService {
             "me", "mi", "mis", "o", "para", "pero", "por", "que", "se", "si", "sobre", "su",
             "un", "una", "y", "yo", "quiero", "saber", "puedo", "necesito"
     );
-
-
 
     public QuestionAnswerService(QuestionAnswerRepository repository) {
         this.repository = repository;
@@ -95,13 +93,13 @@ public class QuestionAnswerService {
             return Set.of();
         }
 
-        // 1. Normalización básica (minúsculas, sin acentos, sin puntuación)
+        // Normalización básica (minúsculas, sin acentos, sin puntuación)
         String normalized = text.toLowerCase();
         normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "");
         normalized = normalized.replaceAll("\\p{Punct}", "");
 
-        // 2. Tokenización, filtrado y stemming en un solo stream
+        // Tokenización, filtrado y stemming
         return Arrays.stream(normalized.split("\\s+"))
                 .filter(token -> !token.isEmpty()) // Elimina tokens vacíos
                 .filter(token -> !STOP_WORDS.contains(token)) // Elimina "stop words"

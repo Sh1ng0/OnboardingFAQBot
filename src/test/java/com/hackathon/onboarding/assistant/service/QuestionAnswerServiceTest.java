@@ -37,6 +37,7 @@ class QuestionAnswerServiceTest {
     @Test
     @DisplayName("Debe devolver la respuesta correcta cuando la coincidencia es clara")
     void shouldReturnCorrectAnswer_whenClearMatchExists() {
+
         // ARRANGE
         QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
         qa1.setId(1L);
@@ -52,10 +53,10 @@ class QuestionAnswerServiceTest {
     }
 
 
-
     @Test
     @DisplayName("Debe encontrar una respuesta ignorando las 'stop words'")
     void shouldFindAnswer_whenQueryContainsStopWords() {
+
         // ARRANGE
         QuestionAnswer qa1 = new QuestionAnswer("¿Cuál es la política de teletrabajo?", "Respuesta de teletrabajo.");
         qa1.setId(1L);
@@ -75,6 +76,7 @@ class QuestionAnswerServiceTest {
     @Test
     @DisplayName("Debe encontrar una respuesta aunque se use singular/plural distinto (Stemming)")
     void shouldFindAnswer_whenQueryUsesSingularAndDbHasPlural() {
+
         // ARRANGE
         QuestionAnswer qa1 = new QuestionAnswer("¿Cómo funcionan las bajas médicas?", "Respuesta sobre bajas.");
         qa1.setId(1L);
@@ -91,10 +93,10 @@ class QuestionAnswerServiceTest {
         assertThat(result).isPresent().contains("Respuesta sobre bajas.");
     }
 
-
     @Test
     @DisplayName("Debe devolver un Optional vacío si la puntuación es 1 (por debajo del umbral)")
     void shouldReturnEmpty_whenMatchScoreIsBelowThreshold() {
+
         // ARRANGE
         QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
         qa1.setId(1L);
@@ -113,6 +115,7 @@ class QuestionAnswerServiceTest {
     @Test
     @DisplayName("Debe devolver un Optional vacío si ninguna palabra clave coincide")
     void shouldReturnEmpty_whenNoMatchFound() {
+
         // ARRANGE
         QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
         qa1.setId(1L);

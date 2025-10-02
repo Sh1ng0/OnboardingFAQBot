@@ -36,11 +36,11 @@ public class ConsoleRunner implements CommandLineRunner {
 
                 if ("salir".equalsIgnoreCase(userInput) || "exit".equalsIgnoreCase(userInput)) {
                     break;
+
+                    // Close and time shenanigans go here for user experiencie
                 }
 
-
                 Optional<String> answerOptional = service.findAnswerFor(userInput);
-
 
                 answerOptional.ifPresentOrElse(
                         answer -> System.out.println("Bot: " + answer),

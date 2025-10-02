@@ -42,8 +42,7 @@ class QuestionAnswerControllerTest {
     @Test
     @DisplayName("GET /api/knowledge debe devolver todas las entradas y un estado 200 OK")
     void getKnowledge_shouldReturnAllEntries_withStatus200() throws Exception {
-        // ARRANGE
-
+        // ARRANGE (No need)
 
         // ACT & ASSERT
 
@@ -57,6 +56,7 @@ class QuestionAnswerControllerTest {
     @Test
     @DisplayName("POST /api/knowledge debe crear una nueva entrada y devolverla con un estado 201 Created")
     void postKnowledge_shouldCreateNewEntry_withStatus201() throws Exception {
+
         // ARRANGE
         // Creamos el objeto sin id
         QuestionAnswer newQuestionAnswer = new QuestionAnswer("Es una pregunta nueva", "Y esta es su respuesta");

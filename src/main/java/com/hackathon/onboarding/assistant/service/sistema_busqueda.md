@@ -1,4 +1,4 @@
-# Sistema de Búsqueda por Relevancia
+# Sistema de Búsqueda por Relevancia (Basado en el sistema de diálogo de la saga King's Quest) y los juego de Sierra en general
 
 El asistente conversacional no se limita a buscar coincidencias exactas de las preguntas, lo que obligaría al usuario a adivinar la formulación correcta. En su lugar, se ha implementado un algoritmo de búsqueda por relevancia para ofrecer una experiencia de usuario más fluida y natural.
 
