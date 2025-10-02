@@ -84,6 +84,7 @@
     </appender>
 
     <!-- Logger for Your Structured Events -->
+    <!-- TRACE DEBUG INFO WARN -->
     <logger name="com.hackathon.onboarding.assistant" level="DEBUG" additivity="false">
         <appender-ref ref="SERVICE_CONSOLE"/>
         <appender-ref ref="ASYNC_FILE"/>

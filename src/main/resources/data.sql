@@ -18,6 +18,7 @@ INSERT INTO question_answer (question, answer) VALUES ('¿Hay algún manual para
 -- TEMA: Bajas Médicas
 INSERT INTO question_answer (question, answer) VALUES ('¿Cómo funcionan las bajas médicas?', 'Debes avisar a tu mánager directamente y enviar el comunicado de baja a RRHH en un plazo de 48h.');
 INSERT INTO question_answer (question, answer) VALUES ('¿Qué hago si me pongo enfermo?', 'Lo primero es avisar a tu mánager. Después, tienes 48h para hacer llegar el comunicado de baja a RRHH.');
+INSERT INTO question_answer (question, answer) VALUES ('¿Qué hago si me pongo enferma?', 'Lo primero es avisar a tu mánager. Después, tienes 48h para hacer llegar el comunicado de baja a RRHH.');
 
 -- TEMA: Teletrabajo
 INSERT INTO question_answer (question, answer) VALUES ('¿Cuál es la política de teletrabajo?', 'Nuestra política es un modelo híbrido flexible. Consulta los detalles en el portal del empleado.');

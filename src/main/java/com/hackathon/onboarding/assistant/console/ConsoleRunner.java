@@ -34,10 +34,18 @@ public class ConsoleRunner implements CommandLineRunner {
                 System.out.print("> ");
                 String userInput = scanner.nextLine();
 
-                if ("salir".equalsIgnoreCase(userInput) || "exit".equalsIgnoreCase(userInput)) {
+                if ("salir".equalsIgnoreCase(userInput)) {
+                    System.out.println(" Cerrando sesión del asistente...");
+                    try {
+                        for (int i = 3; i > 0; i--) {
+                            System.out.printf("\r  Saliendo en %d...", i);
+                            Thread.sleep(1000);
+                        }
+                        System.out.println("\r Sesión finalizada. ¡Hasta pronto!");
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
                     break;
-
-                    // Close and time shenanigans go here for user experiencie
                 }
 
                 Optional<String> answerOptional = service.findAnswerFor(userInput);
@@ -49,6 +57,5 @@ public class ConsoleRunner implements CommandLineRunner {
             }
         }
 
-        System.out.println("Hasta pronto!");
     }
 }

@@ -97,3 +97,29 @@ Quin es l'horari de l'empresa?
 
 ### Resultado
 La **Candidata 1** es seleccionada como la mejor coincidencia, ya que su puntuación (`2`) es la más alta y cumple el umbral mínimo. El sistema devolverá la respuesta asociada a esta pregunta.
+
+
+Nota sobre el umbral de tolerancia (Pasando de 2 a 1)
+
+Inicialmente el sistema necesitaba 2 palabras coincidentes para dar una respuesta...
+
+java
+// Esto no funcionaba:
+Usuario: "vacaciones" ❌
+Usuario: "teletrabajo" ❌  
+Usuario: "nómina" ❌
+
+// Pero esto sí:
+Usuario: "quiero saber sobre vacaciones" ✅
+Problema: La teoría decía "2 palabras = más precisión". La realidad: "1 palabra bien filtrada = mejor experiencia".
+
+La Solución
+Bajamos el threshold a 1 teniendo en cuenta que hemos creado las stop words qe evitan falsos positivos 
+
+30+ STOP_WORDS que eliminan "quiero", "saber", "sobre", etc.
+
+Con esto la experiencia de usuario mejora enormemente.
+(Pese a que desde un punto de vista de consulta a la base de datos 2 sea lo idóneo)
+
+
+

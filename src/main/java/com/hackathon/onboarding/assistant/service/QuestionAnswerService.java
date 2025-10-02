@@ -23,11 +23,11 @@ public class QuestionAnswerService {
     private static final Logger log = LoggerFactory.getLogger(QuestionAnswerService.class);
 
     // Definimos un umbral mínimo de puntuación para considerar una coincidencia válida.
-    // Evita falsos positivos con palabras muy comunes. Puntuación de 2 (dos palabras en común)
+    // Con 2: Evita falsos positivos con palabras muy comunes. PERO: Mejora enormemente la experiencia de usuario, setted a 1
     private static final int MINIMUM_SCORE_THRESHOLD = 1;
 
 
-    // Estas palabras comunes se ignoran en la búsqueda
+    // Estas palabras comunes se ignoran en la búsqueda y facilitan que podamos bajar el treshold, fomentando enormemente la expresividad
     private static final Set<String> STOP_WORDS = Set.of(
             "a", "al", "como", "con", "cual", "de", "del", "donde", "el", "en", "es", "la", "las", "los",
             "me", "mi", "mis", "o", "para", "pero", "por", "que", "se", "si", "sobre", "su",
