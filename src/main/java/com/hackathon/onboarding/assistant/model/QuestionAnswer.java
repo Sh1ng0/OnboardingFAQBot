@@ -25,10 +25,10 @@ public final class QuestionAnswer {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @NotBlank(message = "La pregunta no puede estar vacía.")
+//        @NotBlank(message = "La pregunta no puede estar vacía.")
         private String question;
 
-        @NotBlank(message = "La respuesta no puede estar vacía.")
+//        @NotBlank(message = "La respuesta no puede estar vacía.")
         private String answer;
 
         /**

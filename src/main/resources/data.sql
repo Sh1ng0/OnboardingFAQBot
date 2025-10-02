@@ -13,7 +13,7 @@ INSERT INTO question_answer (question, answer) VALUES ('¿Tenemos horario flexib
 
 -- TEMA: Documentación y Recursos
 INSERT INTO question_answer (question, answer) VALUES ('¿Dónde puedo encontrar la documentación de bienvenida?', 'Puedes encontrar toda la documentación en nuestro portal interno, en la sección ''Onboarding''.');
-INSERT INTO question_answer (question, answer) VALUES ('¿Hay algún manual para nuevos empleados?', 'Sí, el manual de bienvenida está en el portal interno, en la sección ''Onboarding''.');
+INSERT INTO question_answer (question, answer) VALUES ('¿Hay algún manual para nuevos empleados ?', 'Sí, el manual de bienvenida está en el portal interno, en la sección ''Onboarding''.');
 
 -- TEMA: Bajas Médicas
 INSERT INTO question_answer (question, answer) VALUES ('¿Cómo funcionan las bajas médicas?', 'Debes avisar a tu mánager directamente y enviar el comunicado de baja a RRHH en un plazo de 48h.');

@@ -94,7 +94,7 @@ class QuestionAnswerServiceTest {
     }
 
     @Test
-    @DisplayName("Debe devolver un Optional vacío si la puntuación es 1 (por debajo del umbral)")
+    @DisplayName("Debe devolver que 1 es un Optional lleno, por que hemos cambiado el treshold a 1 (perfecto para el umbral)")
     void shouldReturnEmpty_whenMatchScoreIsBelowThreshold() {
 
         // ARRANGE
@@ -109,7 +109,7 @@ class QuestionAnswerServiceTest {
         Optional<String> result = service.findAnswerFor(userQuestion);
 
         // ASSERT
-        assertThat(result).isEmpty();
+        assertThat(result).isPresent().contains("Respuesta sobre vacaciones.");
     }
 
     @Test
@@ -156,4 +156,7 @@ class QuestionAnswerServiceTest {
         // ASSERT
         assertThat(result).isEmpty();
     }
+
+
+
 }

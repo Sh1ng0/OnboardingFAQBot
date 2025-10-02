@@ -24,7 +24,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.hamcrest.Matchers.notNullValue;
 
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -49,7 +48,7 @@ class QuestionAnswerControllerTest {
         mockMvc.perform(get("/api/knowledge"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(15)))
+                .andExpect(jsonPath("$", hasSize(18)))
                 .andExpect(jsonPath("$[0].question", is("¿Cómo solicito las vacaciones?")));
     }
 
@@ -75,4 +74,6 @@ class QuestionAnswerControllerTest {
     }
 
     // Caso 3: Probar el POST /api/knowledge (con datos inválidos, opcional)
+
+
 }

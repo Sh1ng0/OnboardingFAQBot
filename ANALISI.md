@@ -73,3 +73,14 @@ La arquitectura actual permite futuras expansiones de forma limpia:
 * **Personalización:** El servicio podría evolucionar para conectarse a otras APIs internas (ej. un servicio de RRHH) y ofrecer respuestas personalizadas (ej. "¿Cuántos días de vacaciones me quedan?").
 * **Motor de Búsqueda:** El algoritmo de puntuación actual está encapsulado. Podría ser reemplazado por un motor de búsqueda más potente (como Elasticsearch o una librería de NLP) sin que los clientes del servicio se vean afectados.
 * **Internacionalización (i18n):** Los mensajes de respuesta (como el de "respuesta no encontrada")
+
+
+## Comportamiento del Sistema con Inputs Reales
+
+El sistema demuestra robustez ante:
+- **Expresiones emocionales**: `>=(` (filtrado exitoso)
+- **Lenguaje natural coloquial**: "quiero X ahora mismo"
+- **Stop words abundantes**: "y mis vacaciones"
+- **Plurales**: "vacaciones" → matching con entradas en singular
+
+Umbral=1 + STOP_WORDS = Combinación perfecta para UX natural

@@ -33,6 +33,8 @@ public class QuestionAnswerController {
         return ResponseEntity.ok(service.findAll());
     }
 
+
+
     @PostMapping
     @Operation(summary = "Añadir una nueva entrada", description = "Añade una nueva pareja de pregunta/respuesta a la base de conocimiento.")
     @ApiResponses(value = {
