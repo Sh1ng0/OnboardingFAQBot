@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.notNullValue;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 class QuestionAnswerControllerTest {
 
     @Autowired
@@ -41,17 +43,15 @@ class QuestionAnswerControllerTest {
     @DisplayName("GET /api/knowledge debe devolver todas las entradas y un estado 200 OK")
     void getKnowledge_shouldReturnAllEntries_withStatus200() throws Exception {
         // ARRANGE
-        // No necesitamos preparar nada aquí. @SpringBootTest arranca la aplicación
-        // y ejecuta data.sql por nosotros, así que la base de datos ya está poblada.
-        // Sabemos que tenemos 5 entradas en nuestro data.sql.
+
 
         // ACT & ASSERT
-// Ejecutamos la petición y verificamos el resultado en una sola cadena de llamadas.
+
         mockMvc.perform(get("/api/knowledge"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(5)))
-                .andExpect(jsonPath("$[0].question", is("Com solicito vacances?")));
+                .andExpect(jsonPath("$", hasSize(15)))
+                .andExpect(jsonPath("$[0].question", is("¿Cómo solicito las vacaciones?")));
     }
 
     @Test
@@ -66,7 +66,7 @@ class QuestionAnswerControllerTest {
 
         // ACT & ASSERT
         mockMvc.perform(post("/api/knowledge")
-                        .contentType("application/json") // EL cuerpo es un JSON as expected
+                        .contentType("application/json") // EL cuerpo es un JSON, as expected
                         .content(jsonPayload))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(notNullValue())))

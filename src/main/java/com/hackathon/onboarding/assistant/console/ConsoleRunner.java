@@ -2,6 +2,7 @@ package com.hackathon.onboarding.assistant.console;
 
 import com.hackathon.onboarding.assistant.service.QuestionAnswerService;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Scanner;
  * Se ejecuta automáticamente al arrancar la aplicación gracias a la interfaz CommandLineRunner.
  */
 @Component
+@Profile("!test") // Para que no se quede en el bucle durate el testing al arrancar la app
 public class ConsoleRunner implements CommandLineRunner {
 
     private final QuestionAnswerService service;

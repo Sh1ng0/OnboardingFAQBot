@@ -10,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Getter
@@ -24,8 +25,10 @@ public final class QuestionAnswer {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        public String question;
+        @NotBlank(message = "La pregunta no puede estar vacía.")
+        private String question;
 
+        @NotBlank(message = "La respuesta no puede estar vacía.")
         private String answer;
 
         /**

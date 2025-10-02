@@ -88,23 +88,32 @@ public class QuestionAnswerService {
     /**
      * Normaliza y tokeniza un texto para prepararlo para la comparación.
      * @param text El texto a procesar.
-     * @return Un conjunto de palabras (tokens) normalizadas.
+     * @return Un conjunto de palabras (tokens) normalizadas CON TOLERANCIA DE PLURALES/SINGULARES
      */
     private Set<String> getTokens(String text) {
         if (text == null || text.isBlank()) {
             return Set.of();
         }
 
+        // 1. Normalización básica (minúsculas, sin acentos, sin puntuación)
         String normalized = text.toLowerCase();
-
         normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}", "");
-
         normalized = normalized.replaceAll("\\p{Punct}", "");
 
+        // 2. Tokenización, filtrado y stemming en un solo stream
         return Arrays.stream(normalized.split("\\s+"))
-                .filter(token -> !token.isEmpty())
-                .filter(token -> !STOP_WORDS.contains(token))
+                .filter(token -> !token.isEmpty()) // Elimina tokens vacíos
+                .filter(token -> !STOP_WORDS.contains(token)) // Elimina "stop words"
+                .map(token -> { // --- Stemming simple para plurales ---
+                    if (token.endsWith("es")) {
+                        return token.substring(0, token.length() - 2);
+                    }
+                    if (token.endsWith("s")) {
+                        return token.substring(0, token.length() - 1);
+                    }
+                    return token;
+                })
                 .collect(Collectors.toSet());
     }
 

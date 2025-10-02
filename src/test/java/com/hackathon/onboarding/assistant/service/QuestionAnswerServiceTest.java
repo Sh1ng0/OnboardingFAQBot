@@ -35,35 +35,73 @@ class QuestionAnswerServiceTest {
     }
 
     @Test
-    @DisplayName("Debe devolver la respuesta correcta cuando existe una coincidencia clara")
+    @DisplayName("Debe devolver la respuesta correcta cuando la coincidencia es clara")
     void shouldReturnCorrectAnswer_whenClearMatchExists() {
         // ARRANGE
-        String userQuestion = "com demano les meves vacances";
-        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
         qa1.setId(1L);
-        QuestionAnswer qa2 = new QuestionAnswer("Quin es l'horari de l'empresa?", "El horario es de 9 a 18h.");
-        qa2.setId(2L);
-        List<QuestionAnswer> candidates = List.of(qa1, qa2);
+        List<QuestionAnswer> candidates = List.of(qa1);
         when(mockRepository.findAll()).thenReturn(candidates);
+        String userQuestion = "cómo solicito vacaciones";
 
         // ACT
         Optional<String> result = service.findAnswerFor(userQuestion);
 
         // ASSERT
-        assertThat(result)
-                .isPresent()
-                .contains("Enviando un correo a RRHH.");
+        assertThat(result).isPresent().contains("Respuesta sobre vacaciones.");
+    }
+
+
+
+    @Test
+    @DisplayName("Debe encontrar una respuesta ignorando las 'stop words'")
+    void shouldFindAnswer_whenQueryContainsStopWords() {
+        // ARRANGE
+        QuestionAnswer qa1 = new QuestionAnswer("¿Cuál es la política de teletrabajo?", "Respuesta de teletrabajo.");
+        qa1.setId(1L);
+        List<QuestionAnswer> candidates = List.of(qa1);
+        when(mockRepository.findAll()).thenReturn(candidates);
+
+        String userQuestion = "¿cuál es la política que tenéis de teletrabajo?";
+
+        // ACT
+        Optional<String> result = service.findAnswerFor(userQuestion);
+
+        // ASSERT
+        // El test debe pasar porque las palabras clave "política" y "teletrabajo" coinciden (score = 2)
+        assertThat(result).isPresent().contains("Respuesta de teletrabajo.");
     }
 
     @Test
-    @DisplayName("Debe devolver un Optional vacío si ninguna pregunta coincide")
-    void shouldReturnEmpty_whenNoMatchFound() {
+    @DisplayName("Debe encontrar una respuesta aunque se use singular/plural distinto (Stemming)")
+    void shouldFindAnswer_whenQueryUsesSingularAndDbHasPlural() {
         // ARRANGE
-        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        QuestionAnswer qa1 = new QuestionAnswer("¿Cómo funcionan las bajas médicas?", "Respuesta sobre bajas.");
         qa1.setId(1L);
         List<QuestionAnswer> candidates = List.of(qa1);
-        String userQuestion = "hablame del tiempo que hace fuera";
         when(mockRepository.findAll()).thenReturn(candidates);
+        // El usuario pregunta en singular ("baja", "médica") y la BBDD está en plural ("bajas", "médicas")
+        String userQuestion = "Información sobre la baja médica";
+
+        // ACT
+        Optional<String> result = service.findAnswerFor(userQuestion);
+
+        // ASSERT
+        // El test debe pasar porque el stemming reduce "bajas" a "baja" y "médicas" a "médica" (score = 2)
+        assertThat(result).isPresent().contains("Respuesta sobre bajas.");
+    }
+
+
+    @Test
+    @DisplayName("Debe devolver un Optional vacío si la puntuación es 1 (por debajo del umbral)")
+    void shouldReturnEmpty_whenMatchScoreIsBelowThreshold() {
+        // ARRANGE
+        QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
+        qa1.setId(1L);
+        List<QuestionAnswer> candidates = List.of(qa1);
+        when(mockRepository.findAll()).thenReturn(candidates);
+        // La única palabra clave en común es "vacaciones", score = 1, umbral = 2
+        String userQuestion = "info sobre vacaciones";
 
         // ACT
         Optional<String> result = service.findAnswerFor(userQuestion);
@@ -73,13 +111,13 @@ class QuestionAnswerServiceTest {
     }
 
     @Test
-    @DisplayName("Debe devolver un Optional vacío si la puntuación no supera el umbral")
-    void shouldReturnEmpty_whenMatchScoreIsBelowThreshold() {
+    @DisplayName("Debe devolver un Optional vacío si ninguna palabra clave coincide")
+    void shouldReturnEmpty_whenNoMatchFound() {
         // ARRANGE
-        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        QuestionAnswer qa1 = new QuestionAnswer("¿Cómo solicito las vacaciones?", "Respuesta sobre vacaciones.");
         qa1.setId(1L);
         List<QuestionAnswer> candidates = List.of(qa1);
-        String userQuestion = "hablemos de las vacances";
+        String userQuestion = "dónde está la impresora";
         when(mockRepository.findAll()).thenReturn(candidates);
 
         // ACT
