@@ -21,10 +21,12 @@ INSERT INTO question_answer (question, answer) VALUES ('¿Qué hago si me pongo 
 
 -- TEMA: Teletrabajo
 INSERT INTO question_answer (question, answer) VALUES ('¿Cuál es la política de teletrabajo?', 'Nuestra política es un modelo híbrido flexible. Consulta los detalles en el portal del empleado.');
+INSERT INTO question_answer (question, answer) VALUES ('teletrabajo', 'Nuestra política es un modelo híbrido flexible. Consulta los detalles en el portal del empleado.');
 INSERT INTO question_answer (question, answer) VALUES ('¿Cuántos días se puede trabajar desde casa?', 'El número de días depende de tu equipo y rol. Habla con tu mánager para definirlo. La política general está en el portal del empleado.');
 
 -- TEMA: Nóminas (NUEVO)
 INSERT INTO question_answer (question, answer) VALUES ('¿Cuándo se cobra la nómina?', 'La nómina se ingresa el último día hábil de cada mes.');
+INSERT INTO question_answer (question, answer) VALUES ('¿Cuándo cobramos la nómina?', 'La nómina se ingresa el último día hábil de cada mes.');
 INSERT INTO question_answer (question, answer) VALUES ('¿Qué día del mes se paga el salario?', 'El salario se abona en tu cuenta el último día laborable del mes.');
 
 -- TEMA: Gastos y Dietas (NUEVO)

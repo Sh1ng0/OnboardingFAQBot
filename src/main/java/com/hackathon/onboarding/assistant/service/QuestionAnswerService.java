@@ -24,7 +24,7 @@ public class QuestionAnswerService {
 
     // Definimos un umbral mínimo de puntuación para considerar una coincidencia válida.
     // Evita falsos positivos con palabras muy comunes. Puntuación de 2 (dos palabras en común)
-    private static final int MINIMUM_SCORE_THRESHOLD = 2;
+    private static final int MINIMUM_SCORE_THRESHOLD = 1;
 
 
     // Estas palabras comunes se ignoran en la búsqueda
