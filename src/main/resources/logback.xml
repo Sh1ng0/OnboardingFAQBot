@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <!-- Custom Properties for Your Project -->
+    <property name="LOGS_DIR" value="${user.home}/onboarding-assistant/logs"/>
+    <property name="APP_NAME" value="onboarding-assistant"/>
+
+    <!-- Structured JSON Pattern for File Logs -->
+    <property name="JSON_PATTERN" value='{"timestamp":"%d{yyyy-MM-dd HH:mm:ss.SSS}", "level":"%level", "logger":"%logger", "thread":"%thread", "message":"%message", "exception":"%ex"}'/>
+
+    <!-- Enhanced Console Pattern with Colors -->
+    <property name="HACKATHON_CONSOLE_PATTERN" value="%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan([%15.15thread]) %magenta(%-40.40logger{40}) - %msg%n"/>
+
+    <!-- Your Service-Specific Pattern -->
+    <property name="SERVICE_PATTERN" value="%d{HH:mm:ss.SSS} %highlight(➤) %cyan(%-40.40logger{40}) - %msg%n"/>
+
+    <!-- Console Appender with Smart Filtering -->
+    <appender name="HACKATHON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${HACKATHON_CONSOLE_PATTERN}</pattern>
+        </encoder>
+        <!-- Only show important messages in console during demo -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
+    <!-- Special Console Appender for Your Service Events -->
+    <appender name="SERVICE_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${SERVICE_PATTERN}</pattern>
+        </encoder>
+        <!-- Only show your service logs with this appender -->
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>logger.startsWith("com.hackathon.onboarding.assistant")</expression>
+            </evaluator>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- JSON File Appender for Analysis -->
+    <appender name="JSON_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_DIR}/${APP_NAME}.json</file>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+                    <prettyPrint>true</prettyPrint>
+                </jsonFormatter>
+                <timestampFormat>yyyy-MM-dd HH:mm:ss.SSS</timestampFormat>
+                <appendLineSeparator>true</appendLineSeparator>
+            </layout>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_DIR}/archived/${APP_NAME}-%d{yyyy-MM-dd}.json.gz</fileNamePattern>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Detailed File Appender -->
+    <appender name="DETAILED_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOGS_DIR}/${APP_NAME}.log</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %-40logger{40} - %msg%n%ex</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS_DIR}/archived/${APP_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <maxHistory>7</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- Async Appender for Performance -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="DETAILED_FILE" />
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- Logger for Your Structured Events -->
+    <logger name="com.hackathon.onboarding.assistant" level="DEBUG" additivity="false">
+        <appender-ref ref="SERVICE_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="JSON_FILE"/>
+    </logger>
+
+    <!-- Suppress Framework Clutter -->
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="HACKATHON_CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+    </root>
+
+</configuration>
