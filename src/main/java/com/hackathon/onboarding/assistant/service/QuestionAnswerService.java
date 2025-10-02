@@ -57,7 +57,7 @@ public class QuestionAnswerService {
         // De nuevo, usamos Set para evitar duplicados "Vull vacances! vacances, sí redimoni!" (Solo guarda "vacances" una vez)
         Optional<Match> bestMatchOptional = candidates.stream()
                 .map(candidate -> {
-                    Set<String> candidateTokens = getTokens(candidate.question());
+                    Set<String> candidateTokens = getTokens(candidate.getQuestion());
                     Set<String> intersection = new java.util.HashSet<>(candidateTokens);
                     intersection.retainAll(userTokens);
                     return new Match(candidate, intersection.size());
@@ -68,8 +68,8 @@ public class QuestionAnswerService {
         // Damos con una respuesta adecuada a la pregunta, o no?
         if (bestMatchOptional.isPresent()) {
             Match bestMatch = bestMatchOptional.get();
-            ServiceLogEvent.SEARCH_SUCCESSFUL.log(log, bestMatch.candidate().id(), bestMatch.score());
-            return Optional.of(bestMatch.candidate().answer());
+            ServiceLogEvent.SEARCH_SUCCESSFUL.log(log, bestMatch.candidate().getId(), bestMatch.score());
+            return Optional.of(bestMatch.candidate().getAnswer());
         } else {
             ServiceLogEvent.SEARCH_FAILED.log(log, userQuestion);
             return Optional.empty();
@@ -105,7 +105,7 @@ public class QuestionAnswerService {
     }
 
     public QuestionAnswer add(QuestionAnswer newQuestionAnswer) {
-        // Maybe vaildeish
+        // Maybe vaildeish goes here
         return repository.save(newQuestionAnswer);
     }
 }

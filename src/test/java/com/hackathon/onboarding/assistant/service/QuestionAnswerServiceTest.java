@@ -31,22 +31,19 @@ class QuestionAnswerServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Creamos una nueva instancia del servicio antes de cada test,
-        // inyectando nuestro repositorio mockeado.
         service = new QuestionAnswerService(mockRepository);
     }
 
     @Test
     @DisplayName("Debe devolver la respuesta correcta cuando existe una coincidencia clara")
     void shouldReturnCorrectAnswer_whenClearMatchExists() {
-
         // ARRANGE
         String userQuestion = "com demano les meves vacances";
-        List<QuestionAnswer> candidates = List.of(
-                new QuestionAnswer(1L, "Com solicito vacances?", "Enviando un correo a RRHH."),
-                new QuestionAnswer(2L, "Quin es l'horari de l'empresa?", "El horario es de 9 a 18h.")
-        );
-        // Configuramos el mock para que devuelva nuestros candidatos
+        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        qa1.setId(1L);
+        QuestionAnswer qa2 = new QuestionAnswer("Quin es l'horari de l'empresa?", "El horario es de 9 a 18h.");
+        qa2.setId(2L);
+        List<QuestionAnswer> candidates = List.of(qa1, qa2);
         when(mockRepository.findAll()).thenReturn(candidates);
 
         // ACT
@@ -58,18 +55,14 @@ class QuestionAnswerServiceTest {
                 .contains("Enviando un correo a RRHH.");
     }
 
-
     @Test
     @DisplayName("Debe devolver un Optional vacío si ninguna pregunta coincide")
     void shouldReturnEmpty_whenNoMatchFound() {
         // ARRANGE
-        List<QuestionAnswer> candidates = List.of(
-                new QuestionAnswer(1L, "Com solicito vacances?", "Enviando un correo a RRHH."),
-                new QuestionAnswer(2L, "Quin es l'horari de l'empresa?", "El horario es de 9 a 18h.")
-        );
-        String userQuestion = "hablame del tiempo que hace fuera"; // Una pregunta sin palabras en común
-
-
+        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        qa1.setId(1L);
+        List<QuestionAnswer> candidates = List.of(qa1);
+        String userQuestion = "hablame del tiempo que hace fuera";
         when(mockRepository.findAll()).thenReturn(candidates);
 
         // ACT
@@ -78,27 +71,23 @@ class QuestionAnswerServiceTest {
         // ASSERT
         assertThat(result).isEmpty();
     }
-
 
     @Test
     @DisplayName("Debe devolver un Optional vacío si la puntuación no supera el umbral")
     void shouldReturnEmpty_whenMatchScoreIsBelowThreshold() {
         // ARRANGE
-        List<QuestionAnswer> candidates = List.of(
-                new QuestionAnswer(1L, "Com solicito vacances?", "Enviando un correo a RRHH.")
-        );
+        QuestionAnswer qa1 = new QuestionAnswer("Com solicito vacances?", "Enviando un correo a RRHH.");
+        qa1.setId(1L);
+        List<QuestionAnswer> candidates = List.of(qa1);
         String userQuestion = "hablemos de las vacances";
         when(mockRepository.findAll()).thenReturn(candidates);
-
 
         // ACT
         Optional<String> result = service.findAnswerFor(userQuestion);
 
-
         // ASSERT
         assertThat(result).isEmpty();
     }
-
 
     @Test
     @DisplayName("Debe devolver un Optional vacío cuando la BBDD está vacía")
@@ -107,10 +96,8 @@ class QuestionAnswerServiceTest {
         String userQuestion = "cualquier pregunta";
         when(mockRepository.findAll()).thenReturn(Collections.emptyList());
 
-
         // ACT
         Optional<String> result = service.findAnswerFor(userQuestion);
-
 
         // ASSERT
         assertThat(result).isEmpty();
@@ -122,13 +109,10 @@ class QuestionAnswerServiceTest {
         // ARRANGE
         String userQuestion = null;
 
-
         // ACT
         Optional<String> result = service.findAnswerFor(userQuestion);
-
 
         // ASSERT
         assertThat(result).isEmpty();
     }
-
 }

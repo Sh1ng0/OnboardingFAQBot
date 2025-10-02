@@ -64,6 +64,7 @@ public interface Loggable {
                 break;
             case INFO:
                 if (logger.isInfoEnabled()) {
+                    // Versión corregida: solo un "getMessageTemplate()"
                     logger.info(MessageFormat.format(this.getMessageTemplate(), params));
                 }
                 break;
@@ -78,5 +79,6 @@ public interface Loggable {
                 }
                 break;
         }
-    }
+}
+
 }

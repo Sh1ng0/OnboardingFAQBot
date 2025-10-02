@@ -1,14 +1,3 @@
--- Este fichero se ejecuta automáticamente al arrancar la aplicación con H2.
-
--- Borramos la tabla si existe para asegurar un estado limpio cada vez que arrancamos (opcional pero bueno para desarrollo)
-DROP TABLE IF EXISTS question_answer;
-
--- Creamos la tabla (aunque JPA también puede hacerlo, es bueno tenerlo explícito)
-CREATE TABLE question_answer (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    question VARCHAR(255) NOT NULL,
-    answer VARCHAR(1000) NOT NULL
-);
 
 -- Insertamos los datos iniciales
 INSERT INTO question_answer (question, answer) VALUES ('Com solicito vacances?', 'Has d’enviar un correu a rrhh@empresa.com amb les dates proposades.');

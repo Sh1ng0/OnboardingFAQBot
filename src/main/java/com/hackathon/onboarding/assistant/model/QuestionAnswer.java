@@ -6,20 +6,34 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-/**
- * Representa una entrada de la base de conocimiento (una pregunta y su respuesta).
- * Es una entidad de JPA y se modela como un record inmutable.
- */
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.*;
+
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@EqualsAndHashCode(of = "id") // Importante: Basar el equals y hashCode solo en el ID
 @Entity
-public record QuestionAnswer(
+public final class QuestionAnswer {
+
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        Long id,
-        String question,
-        String answer
-) {
-    // For JPA
-    public QuestionAnswer() {
-        this(null, null, null);
-    }
+        private Long id;
+
+        public String question;
+
+        private String answer;
+
+        /**
+         * Constructor de conveniencia para crear nuevas instancias sin ID.
+         * Lombok generará el constructor con todos los argumentos y el vacío.
+         */
+        public QuestionAnswer(String question, String answer) {
+                this.question = question;
+                this.answer = answer;
+        }
 }
