@@ -1,4 +1,4 @@
-# Onboarding Assistant Bot 🤖
+# Onboarding Assistant Bot 
 
 Un asistente conversacional simple, implementado en Java con Spring Boot, diseñado para resolver las preguntas frecuentes durante el proceso de onboarding de nuevos empleados.
 
@@ -8,7 +8,7 @@ Este proyecto ha sido desarrollado como prueba técnica, poniendo el foco en una
 
 
 
-## 📋 Requisitos Previos
+##  Requisitos Previos
 
 Antes de empezar, asegúrate de tener instalado en tu sistema:
 
@@ -18,7 +18,7 @@ Antes de empezar, asegúrate de tener instalado en tu sistema:
 
 ---
 
-## 🚀 Instalación y Ejecución
+##  Instalación y Ejecución
 
 Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local.
 
@@ -40,7 +40,7 @@ Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local.
 
 ---
 
-## 💬 Ejemplos de Uso
+##  Ejemplos de Uso
 
 Una vez la aplicación está en marcha, puedes interactuar con el bot directamente desde la consola.
 
@@ -62,7 +62,7 @@ Una vez la aplicación está en marcha, puedes interactuar con el bot directamen
 
 ---
 
-## ✅ Pruebas de la Aplicación
+## Pruebas de la Aplicación
 
 El proyecto incluye una suite de tests unitarios y de integración para garantizar la calidad del código y el correcto funcionamiento de los endpoints de la API. Para ejecutarlos, utiliza el siguiente comando desde la raíz del proyecto:
 
@@ -72,7 +72,7 @@ mvn test
 
 ---
 
-## 📖 Documentación de la API REST
+##  Documentación de la API REST
 
 La gestión de la base de conocimiento se puede realizar a través de una API REST. La documentación completa de los endpoints, generada con **SpringDoc (OpenAPI)**, está disponible en la siguiente URL una vez que la aplicación está en marcha:
 
@@ -84,6 +84,6 @@ La gestión de la base de conocimiento se puede realizar a través de una API RE
 
 ---
 
-## 👨‍💻 Autor
+##  Autor
 
 * **[Jose Miguel Arbizu]** - [https://www.linkedin.com/in/jose-arbizu-rendon-ab9501354/]
