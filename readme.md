@@ -1,92 +1,97 @@
-# Onboarding Assistant
+# Onboarding Assistant Bot 🤖
 
-## Descripción
+Un asistente conversacional simple, implementado en Java con Spring Boot, diseñado para resolver las preguntas frecuentes durante el proceso de onboarding de nuevos empleados.
 
-**Onboarding Assistant** es un asistente conversacional simple, diseñado para responder a las preguntas frecuentes (FAQ) de los nuevos empleados durante su proceso de incorporación (onboarding).
-
-Este proyecto ha sido desarrollado como parte de la prueba técnica de acceso para la hackathon de Octubre de 2025. La aplicación consiste en un servicio backend con una API REST para su gestión y una interfaz de consola para la interacción del usuario.
+Este proyecto ha sido desarrollado como prueba técnica, poniendo el foco en una arquitectura limpia, un código mantenible y, sobre todo, una experiencia de usuario natural y fluida.
 
 ---
 
-## Requisitos Previos
+## 📸 Demo en Acción
 
-Para compilar y ejecutar el proyecto, necesitarás:
-* **Java JDK 21** o superior.
-* **Apache Maven** 3.8 o superior.
-* **Git** para clonar el repositorio.
+El bot es capaz de entender la intención del usuario incluso cuando la pregunta contiene "ruido" o un lenguaje coloquial, gracias a su algoritmo de búsqueda por relevancia.
+
+![Demostración del Bot en la Consola](https://i.imgur.com/G5gC3jB.png)
 
 ---
 
-## Instalación y Ejecución
+## 📋 Requisitos Previos
 
-1.  **Clonar el repositorio:**
+Antes de empezar, asegúrate de tener instalado en tu sistema:
+
+* **Java**: JDK 17 o superior.
+* **Maven**: Versión 3.8 o superior.
+* **Git**.
+
+---
+
+## 🚀 Instalación y Ejecución
+
+Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local.
+
+1.  **Clona el repositorio:**
     ```bash
-    git clone https://github.com/Sh1ng0/OnboardingFAQBot
-    cd onboarding-assistant
+    git clone [URL_DE_TU_REPOSITORIO]
+    cd [NOMBRE_DE_LA_CARPETA_DEL_PROYECTO]
     ```
 
-2.  **Compilar el proyecto:**
+2.  **Compila y empaqueta el proyecto:**
+    Este comando compilará el código, ejecutará los tests y generará un fichero `.jar` ejecutable en el directorio `target/`.
     ```bash
-    mvn clean install
+    mvn clean package
     ```
 
-3.  **Ejecutar la aplicación:**
-    Puedes ejecutar la aplicación de dos maneras:
-
-    * **A través del plugin de Maven (recomendado):**
-        ```bash
-        mvn spring-boot:run
-        ```
-    * **Ejecutando el fichero JAR compilado:**
-        ```bash
-        java -jar target/onboarding-assistant-0.0.1-SNAPSHOT.jar
-        ```
-    Una vez ejecutada, la aplicación estará escuchando en el puerto `8090` y la interfaz de consola se activará en el terminal.
+3.  **Ejecuta el asistente conversacional:**
+    Una vez compilado, lanza la aplicación. La consola se quedará esperando tus preguntas.
+    ```bash
+    java -jar target/onboarding-assistant-0.0.1-SNAPSHOT.jar
+    ```
 
 ---
 
-## Ejemplos de Uso (Consola)
+## 💬 Ejemplos de Uso
 
-Al arrancar la aplicación, puedes interactuar directamente con el bot. Introduce una pregunta y pulsa Enter. Para salir, escribe `salir`.
+Una vez la aplicación está en marcha, puedes interactuar con el bot directamente desde la consola.
 
-**Ejemplo de búsqueda exitosa:**
+**Consulta con una respuesta conocida:**
+> **> ¿Cómo pido las vacaciones?**
+> **Bot:** Debes enviar un correo a rrhh@empresa.com con las fechas propuestas.
 
-```
-¿Cómo solicito las vacaciones?
-Bot: Debes enviar un correo a rrhh@empresa.com con las fechas propuestas.
-```
+**Consulta con una sola palabra clave:**
+> **> nómina**
+> **Bot:** La nómina se ingresa el último día hábil de cada mes.
 
-**Ejemplo de búsqueda parcial:**
-```
-Háblame del horario
-Bot: El horario es de 9:00 a 18:00, de lunes a viernes.
-```
+**Consulta sin respuesta conocida:**
+> **> ¿Dónde está la máquina de café?**
+> **Bot:** Lo siento, no tengo una respuesta para tu pregunta
 
-**Ejemplo de búsqueda sin resultados:**
-```
-¿Dónde está la máquina de café?
-Bot: Lo siento, no he encontrado una respuesta para tu pregunta.
-```
+**Para finalizar la sesión:**
+> **> salir**
+> **Bot:** Cerrando sesión del asistente...
 
 ---
 
-## Pruebas de la Aplicación
+## ✅ Pruebas de la Aplicación
 
-El proyecto incluye una suite de tests unitarios y de integración para garantizar la calidad y el correcto funcionamiento del código.
+El proyecto incluye una suite de tests unitarios y de integración para garantizar la calidad del código y el correcto funcionamiento de los endpoints de la API. Para ejecutarlos, utiliza el siguiente comando desde la raíz del proyecto:
 
-Para ejecutar todos los tests, utiliza el siguiente comando de Maven:
 ```bash
 mvn test
 ```
 
 ---
 
-## Documentación REST (Swagger UI)
+## 📖 Documentación de la API REST
 
-La API REST está completamente documentada usando OpenAPI 3. Una vez que la aplicación está en ejecución, puedes acceder a la interfaz interactiva de Swagger UI en la siguiente URL:
+La gestión de la base de conocimiento se puede realizar a través de una API REST. La documentación completa de los endpoints, generada con **SpringDoc (OpenAPI)**, está disponible en la siguiente URL una vez que la aplicación está en marcha:
 
-[http://localhost:8090/swagger-ui.html](http://localhost:8090/swagger-ui.html)
+[**http://localhost:8080/swagger-ui/index.html**](http://localhost:8080/swagger-ui/index.html)
 
-Adicionalmente, se ha incluido Spring Boot Actuator. Puedes consultar el estado de salud de la aplicación (incluyendo la conexión a la base de datos) aquí:
+### Endpoints Principales
+* `GET /api/knowledge`: Devuelve todas las preguntas y respuestas almacenadas.
+* `POST /api/knowledge`: Añade una nueva entrada a la base de conocimiento.
 
-[http://localhost:8090/actuator/health](http://localhost:8090/actuator/health)
+---
+
+## 👨‍💻 Autor
+
+* **[Jose Miguel Arbizu]** - [https://www.linkedin.com/in/jose-arbizu-rendon-ab9501354/]

@@ -157,6 +157,4 @@ class QuestionAnswerServiceTest {
         assertThat(result).isEmpty();
     }
 
-
-
 }

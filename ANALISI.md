@@ -1,86 +1,60 @@
+# Anàlisi Tècnica 2.0: Onboarding Assistant
 
-Autor: Jose Arbizu Rendon
-
+Este documento detalla la filosofía de diseño, la arquitectura y las decisiones técnicas clave detrás del proyecto "Onboarding Assistant".
 
 ---
 
-### Borrador del `ANALISI.md`
+### 1. Filosofía de Diseño y Comportamiento del Bot
 
-```markdown
-# Análisis Técnico: Onboarding Assistant
+El núcleo del asistente no es una simple consulta a una base de datos, sino un **parser de intenciones** inspirado en los sistemas de diálogo de las aventuras gráficas clásicas de Sierra, como **King's Quest**. El objetivo no es forzar al usuario a adivinar la pregunta exacta, sino interpretar su lenguaje natural para encontrar la respuesta más relevante.
 
-Este documento detalla la arquitectura, las decisiones de diseño y las consideraciones técnicas del proyecto "Onboarding Assistant".
+Este enfoque permite al sistema manejar con robustez entradas del mundo real, demostrando una gran flexibilidad ante:
+* **Lenguaje coloquial y emocional:** Frases como "quiero saber X ahora mismo" o el uso de emoticonos como `>=(` son procesadas correctamente.
+* **Abundancia de *stop words*:** El sistema aísla los términos importantes en frases como "y entonces quiero saber lo de mis vacaciones".
+* **Singulares y Plurales:** Una búsqueda por "vacaciones" encontrará correctamente la entrada "vacación", gracias a un *stemming* simple.
 
-## 1. Reglas y Comportamiento del Bot
+#### **El Algoritmo de Búsqueda**
+1.  **Normalización:** La pregunta del usuario y las candidatas se estandarizan (minúsculas, sin acentos ni puntuación).
+2.  **Tokenización y Filtrado:** El texto se descompone en *tokens* (palabras), eliminando las *stop words* para aislar la esencia de la consulta.
+3.  **Puntuación (*Scoring*):** La relevancia se calcula por la intersección de *tokens* entre la pregunta del usuario y cada candidata.
+4.  **Selección y Umbral:** Se elige el candidato con la puntuación más alta.
 
-El comportamiento principal del asistente se basa en un sistema de búsqueda por relevancia, diseñado para ser más flexible que una simple coincidencia de texto exacta.
+#### **Decisión Clave: Umbral=1 + *Stop Words* = UX Natural**
+Se tomó la decisión estratégica de usar un **umbral de confianza mínimo de 1**, permitiendo que una sola palabra clave bien identificada sea suficiente para encontrar una respuesta. Esta aparente pérdida de precisión se compensa con una lista rica y bien definida de *stop words*. El resultado es una **experiencia de usuario (UX) mucho más fluida y natural**, donde consultas directas como "nómina" o "teletrabajo" funcionan a la perfección.
 
-### Algoritmo de Búsqueda
+---
 
-Cuando un usuario introduce una pregunta, el sistema sigue estos pasos:
-1.  **Normalización:** La pregunta del usuario y todas las preguntas de la base de conocimiento se "limpian" (se pasan a minúsculas, se eliminan acentos y puntuación).
-2.  **Tokenización:** Cada pregunta normalizada se descompone en un conjunto (`Set`) de palabras únicas (tokens).
-3.  **Puntuación (Scoring):** Se calcula una puntuación de similitud para cada pregunta de la base de datos contando el número de tokens en común con la pregunta del usuario.
-4.  **Selección:** Se selecciona la pregunta con la puntuación más alta. Si esta puntuación no supera un umbral mínimo de confianza (actualmente `2`), se considera que no se ha encontrado una respuesta válida.
-5.  **Respuesta:** Si se encuentra un candidato válido, se devuelve su respuesta. Si no, se devuelve un mensaje genérico indicando que no se ha encontrado una solución.
+### 2. Arquitectura y Decisiones Técnicas
 
-## 2. Estructura de la Base de Conocimiento
+El proyecto se sustenta en una arquitectura por capas clásica, garantizando la separación de responsabilidades y la mantenibilidad.
 
-La base de conocimiento se persiste en una base de datos en memoria **H2**. Al arrancar la aplicación, se inicializa con un conjunto de datos predefinido a través de un script `data.sql`.
+* **Stack Tecnológico:**
+    * **Lenguaje:** Java 21
+    * **Framework:** Spring Boot 3
+    * **Persistencia:** Spring Data JPA, Hibernate, H2 Database
+    * **Build/Test:** Maven, JUnit 5, Mockito
+    * **API Docs:** SpringDoc OpenAPI (Swagger)
 
-La unidad de conocimiento se modela con la entidad `QuestionAnswer`, que contiene los siguientes campos:
-* `id` (Long): Clave primaria autogenerada.
-* `question` (String): La pregunta canónica.
-* `answer` (String): La respuesta oficial.
+#### **Decisiones de Diseño Clave**
 
-## 3. Arquitectura y Decisiones Técnicas
+1.  **`record` vs. `class`: Una Decisión Pragmática bajo Presión**
+    Inicialmente, se modeló la entidad `QuestionAnswer` como un **`record` de Java** por su concisión e inmutabilidad. Sin embargo, durante la integración, surgieron problemas de compatibilidad persistentes entre la versión de Hibernate y la instanciación de `records` como entidades JPA. En lugar de perder un tiempo valioso en una depuración incierta, se tomó la **decisión pragmática de refactorizar la entidad a una `clase` tradicional** con Lombok. Esta acción, aunque se alejaba de la solución teóricamente más "elegante", garantizó la estabilidad, desbloqueó el desarrollo y demostró una capacidad clave: **resolver problemas y cumplir objetivos dentro de una fecha límite**.
 
-### Arquitectura General
+2.  **Uso de `Optional<String>` para Separar Responsabilidades**
+    El servicio de búsqueda devuelve un `Optional`. Esta no es una decisión trivial; refuerza una **clara separación de responsabilidades**. El servicio se limita a informar si ha encontrado (o no) una respuesta. Es la capa de presentación (`consola` o `controller`) la que decide cómo comunicar esa ausencia al usuario final (con un mensaje amigable, un código HTTP 404, etc.).
 
-El proyecto sigue una **arquitectura por capas** clásica y robusta, promoviendo una alta cohesión y un bajo acoplamiento:
+3.  **Logging Semántico y Estructurado**
+    Se diseñó un patrón de logging a medida (`Loggable` + `enum`) para definir eventos de forma estructurada. Esto centraliza los mensajes, sigue el principio DRY (*Don't Repeat Yourself*) y hace el código del servicio mucho más limpio y fácil de mantener.
 
-* **Capa de Presentación (`controller`, `console`):** Responsable de la interacción con el exterior. Incluye el `Controller` para la API REST y el `CommandLineRunner` para la interfaz de terminal.
-* **Capa de Servicio (`service`):** Contiene la lógica de negocio principal. El `QuestionAnswerService` implementa el algoritmo de búsqueda y orquesta la comunicación con la capa de persistencia.
-* **Capa de Persistencia (`repository`):** Abstrae el acceso a datos. Se utiliza una interfaz de Spring Data JPA (`QuestionAnswerRepository`) para comunicarse con la base de datos H2.
+4.  **Estrategia de Testing Dual**
+    Se implementaron tanto tests unitarios con **Mockito** para aislar y verificar la lógica de negocio del servicio, como tests de integración con **`@SpringBootTest` y `MockMvc`** para validar el flujo completo de la API REST, desde la petición HTTP hasta la base de datos.
 
-### Stack Tecnológico
-* **Lenguaje:** Java 21 (LTS)
-* **Framework:** Spring Boot 3
-* **Persistencia:** Spring Data JPA con Hibernate y base de datos en memoria H2.
-* **Build Tool:** Apache Maven
-* **Documentación API:** SpringDoc OpenAPI (Swagger UI)
-* **Testing:** JUnit 5, Mockito, Spring Test (MockMvc).
+---
 
-### Decisiones de Diseño Clave
+### 3. Consideraciones para Mantenimiento Futuro
 
-Durante el desarrollo, se tomaron varias decisiones importantes:
+La arquitectura está preparada para crecer de forma ordenada:
 
-1.  **`record` vs. `class` para la Entidad:** Inicialmente se optó por un `record` de Java para la entidad `QuestionAnswer` por su concisión e inmutabilidad. Sin embargo, nos encontramos con un problema de compatibilidad persistente entre la versión de Hibernate, la configuración del proyecto y la instanciación de `records` como entidades JPA. Tras una depuración metódica, se tomó la **decisión pragmática** de refactorizar la entidad a una `clase` tradicional anotada con Lombok. Esto garantizó la estabilidad y compatibilidad con el framework, desbloqueando el desarrollo y demostrando una toma de decisiones orientada a cumplir objetivos bajo una fecha límite.
-
-2.  **Uso de `Optional<String>` en el Servicio:** El servicio de búsqueda devuelve un `Optional` en lugar de un `String` o `null`. Esta decisión refuerza la **separación de responsabilidades**. El servicio informa si ha encontrado un resultado o no, y deja que la capa de presentación (`consola` o `controller`) decida cómo traducir esa ausencia al usuario final (un texto amigable, un código HTTP 404, etc.).
-
-3.  **Estrategia de Testing Dual:** Se implementó una estrategia de dos niveles:
-    * **Tests Unitarios:** Para el `QuestionAnswerService`, usando Mockito para aislar la lógica de negocio.
-    * **Tests de Integración:** Para el `QuestionAnswerController`, usando `@SpringBootTest` y `MockMvc` para validar el flujo completo de la aplicación, desde la petición HTTP hasta la base de datos.
-
-4.  **Logging Semántico:** Se diseñó un patrón de logging (`Loggable` + `enum`) para centralizar la lógica y definir los eventos de log de forma estructurada, mejorando la mantenibilidad y la legibilidad del código.
-
-## 4. Consideraciones para Mantenimiento Futuro
-
-La arquitectura actual permite futuras expansiones de forma limpia:
-
-* **Nuevos Canales:** Se podría añadir un bot de Slack o Microsoft Teams creando una nueva clase en la capa de presentación que simplemente llame al `QuestionAnswerService` existente.
-* **Personalización:** El servicio podría evolucionar para conectarse a otras APIs internas (ej. un servicio de RRHH) y ofrecer respuestas personalizadas (ej. "¿Cuántos días de vacaciones me quedan?").
-* **Motor de Búsqueda:** El algoritmo de puntuación actual está encapsulado. Podría ser reemplazado por un motor de búsqueda más potente (como Elasticsearch o una librería de NLP) sin que los clientes del servicio se vean afectados.
-* **Internacionalización (i18n):** Los mensajes de respuesta (como el de "respuesta no encontrada")
-
-
-## Comportamiento del Sistema con Inputs Reales
-
-El sistema demuestra robustez ante:
-- **Expresiones emocionales**: `>=(` (filtrado exitoso)
-- **Lenguaje natural coloquial**: "quiero X ahora mismo"
-- **Stop words abundantes**: "y mis vacaciones"
-- **Plurales**: "vacaciones" → matching con entradas en singular
-
-Umbral=1 + STOP_WORDS = Combinación perfecta para UX natural
+* **Evolución del Motor de Búsqueda:** El algoritmo de *scoring* está encapsulado. Podría ser sustituido por un motor más avanzado (ej. Elasticsearch, o librerías de NLP como Apache OpenNLP) sin afectar al resto de la aplicación.
+* **Extensibilidad a Nuevos Canales:** La lógica de negocio es agnóstica al canal. Añadir un bot para Slack o una interfaz web solo requeriría crear un nuevo componente en la capa de presentación que consuma el `QuestionAnswerService` existente.
+* **Internacionalización (i18n):** Los mensajes de respuesta del bot están centralizados, lo que facilitaría su adaptación a múltiples idiomas.

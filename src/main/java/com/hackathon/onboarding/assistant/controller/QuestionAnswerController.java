@@ -25,7 +25,7 @@ public class QuestionAnswerController {
     }
 
     @GetMapping
-    @Operation(summary = "Obtener toda la base de conocimiento", description = "Devuelve una lista con todas las preguntas y respuestas almacenadas.")
+    @Operation(summary = "Obtener toda la base de datos cognitiva", description = "Devuelve una lista con todas las preguntas y respuestas almacenadas.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación exitosa. Devuelve la lista de entradas.")
     })
