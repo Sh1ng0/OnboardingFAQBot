@@ -6,13 +6,7 @@ Este proyecto ha sido desarrollado como prueba técnica, poniendo el foco en una
 
 ---
 
-## 📸 Demo en Acción
 
-El bot es capaz de entender la intención del usuario incluso cuando la pregunta contiene "ruido" o un lenguaje coloquial, gracias a su algoritmo de búsqueda por relevancia.
-
-![Demostración del Bot en la Consola](https://i.imgur.com/G5gC3jB.png)
-
----
 
 ## 📋 Requisitos Previos
 
@@ -30,9 +24,7 @@ Sigue estos pasos para clonar y ejecutar el proyecto en tu máquina local.
 
 1.  **Clona el repositorio:**
     ```bash
-    git clone [URL_DE_TU_REPOSITORIO]
-    cd [NOMBRE_DE_LA_CARPETA_DEL_PROYECTO]
-    ```
+    git clone [https://github.com/Sh1ng0/OnboardingFAQBot
 
 2.  **Compila y empaqueta el proyecto:**
     Este comando compilará el código, ejecutará los tests y generará un fichero `.jar` ejecutable en el directorio `target/`.
